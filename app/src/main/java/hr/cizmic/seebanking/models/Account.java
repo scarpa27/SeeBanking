@@ -1,7 +1,11 @@
 package hr.cizmic.seebanking.models;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Locale;
 
 public class Account {
     private Integer id;
@@ -31,6 +35,15 @@ public class Account {
 
     public ArrayList<Transaction> getTransactions() {
         return transactions;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public Account sortTransactions() {
+        this.transactions.sort(Comparator.comparing(Transaction::getDate));
+        return this;
     }
 
     @Override

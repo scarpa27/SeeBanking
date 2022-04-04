@@ -39,7 +39,7 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
         holder.tvAmount.setText(info.get(0));
         holder.tvDate.setText(info.get(1));
         holder.tvDesc.setText(info.get(2));
-        holder.tvType.setText("type");
+        holder.tvType.setText(info.get(3));
     }
 
     @Override

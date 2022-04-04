@@ -71,7 +71,8 @@ public class JSONParse {
                     String t_date   = trns.getString("date");
                     String t_desc   = trns.getString("description");
                     String t_amount = trns.getString("amount");
-                    Transaction t = new Transaction(t_id, t_date, t_desc, t_amount);
+                    String t_type   = trns.has("type") ? trns.getString("type") : "";
+                    Transaction t = new Transaction(t_id, t_date, t_desc, t_amount, t_type);
                     acc_transactions.add(t);
                 }
                 Account a = new Account(acc_id, acc_iban, acc_balance, acc_currency, acc_transactions);
