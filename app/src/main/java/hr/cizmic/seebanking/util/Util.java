@@ -10,7 +10,7 @@ import hr.cizmic.seebanking.models.User;
 
 public class Util {
     public static User generateFakeData(User user) {
-        Random r = new Random();
+        Random r = new Random(System.currentTimeMillis());
         user.getAccounts().forEach(acc -> {
            acc.getTransactions().addAll(fakeDataUtil(r, acc.getCurrency().toString()));
         });
@@ -25,7 +25,7 @@ public class Util {
                     new Transaction(
                             i+11,
                             LocalDate.of(2015+r.nextInt(2), 1+r.nextInt(12), 1+r.nextInt(28) ),
-                            (50*(int)Math.sqrt(1+r.nextInt(2000))+",00 "+curr),
+                            ((int)(15+r.nextInt(50)*r.nextInt(50)+r.nextInt(19))+",00 "+curr),
                             "fake data")
             );
         }

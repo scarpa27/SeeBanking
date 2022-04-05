@@ -1,5 +1,8 @@
-package hr.cizmic.seebanking;
+package hr.cizmic.seebanking.repositories;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -8,12 +11,16 @@ import androidx.lifecycle.MutableLiveData;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import hr.cizmic.seebanking.R;
+import hr.cizmic.seebanking.activities.SeeBankingApp;
 import hr.cizmic.seebanking.models.Account;
+import hr.cizmic.seebanking.models.Login;
 import hr.cizmic.seebanking.models.User;
 import hr.cizmic.seebanking.util.JSONParse;
 import hr.cizmic.seebanking.util.Util;
 
 public class Repository {
+    private MutableLiveData<Login> mutLogin = new MutableLiveData<>();
     private MutableLiveData<User> mutLiveUser;
     private MutableLiveData<Account> mutLiveAcc;
     private User holdUser;
@@ -27,14 +34,21 @@ public class Repository {
     }
     //endregion
 
+    public LiveData<Login> getLiveLoginInfo() {
+        provjera();
+        fetchLoginInfo();
+        return mutLogin;
+    }
 
     public LiveData<User> getLiveUserInfo() {
         provjera();
+        fetchData();
         return mutLiveUser;
     }
 
     public LiveData<Account> getLiveAccountInfo() {
         provjera();
+        fetchData();
         return mutLiveAcc;
     }
 
@@ -47,7 +61,17 @@ public class Repository {
             mutLiveAcc = new MutableLiveData<>();
         if (mutLiveAcc.getValue() == null)
             mutLiveAcc.postValue(new Account());
-        fetchData();
+        if (mutLogin == null)
+            mutLogin = new MutableLiveData<>();
+        if (mutLogin.getValue() == null)
+            mutLogin.postValue(new Login("","",""));
+    }
+
+    private void fetchLoginInfo() {
+        Application app = SeeBankingApp.instance();
+        SharedPreferences pref = app.getSharedPreferences(app.getString(R.string.login_info), Context.MODE_PRIVATE);
+        String[] info = pref.getString(app.getString(R.string.login_info),"").split(";");
+        mutLogin.setValue(new Login(info[0],info[1],info[2]));
     }
 
     private void fetchData() {
@@ -82,7 +106,7 @@ public class Repository {
     private void postHoldToMutable() {
         holdAcc = holdUser.getAccounts().get(getCurrAcc());
         mutLiveUser.postValue(holdUser);
-        mutLiveAcc.postValue(holdAcc.sortTransactions());
+        mutLiveAcc.postValue(holdAcc);
     }
 
     public void SwipeRight() {

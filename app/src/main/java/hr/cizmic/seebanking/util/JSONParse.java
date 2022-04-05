@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import hr.cizmic.seebanking.models.Account;
@@ -38,7 +39,7 @@ public class JSONParse {
             Log.d("BANKA","querying remote url");
             URL url = new URL("https://mportal.asseco-see.hr/builds/ISBD_public/Zadatak_1.json");
             InputStream ins = url.openStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(ins, "UTF-8"));
+            BufferedReader rd = new BufferedReader(new InputStreamReader(ins, StandardCharsets.UTF_8));
             json = readAll(rd);
             Log.d("BANKA","creating json object from response");
             jObj = new JSONObject(json);

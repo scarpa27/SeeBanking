@@ -1,0 +1,28 @@
+Zadatak
+Cilj je napraviti jednostavnu mBanking aplikaciju koja ce korisniku omoguciti registraciju, login te pregled transakcija po odabranome racunu.
+
+
+Registracija korisnika
+Ekran treba sadržavati polja za unos imena i prezimena korisnika. Nakon što korisnik definira te podatke sljedeci korak je definiranje pina. Ako smo uspjesno unijeli pin dohvatit cemo podatke o useru s linka: http://mportal.asseco-see.hr/builds/ISBD_public/Zadatak_1.json te ih prikazati na sljedecem ekranu.
+ 
+Napomena:
+•	Sva polja su obavezna
+•	Ime korisnika: Alfanumericki znakovi, max 30 znakova
+•	Prezime korisnika: Alfanumericki znakovi, max 30 znakova
+•	Pin: min 4, max 6 znamenki
+Pregled transakcija po racunu
+Na navedenom ekranu prikazujemo racun korisnika te ispod njega listu transakcija za taj racun. Korisnik ima mogucnost da odabere drugi racun putem dialoga te sukladno tome i prikaze odgovarajuce transakcije za taj isti racun.
+ 
+Napomena:
+•	sortirati transakcije po datumu
+•	omoguciti logout korisnika nakon cega ce se prikazati login ekran
+Login korisnika
+Login ekran sadrzi title s imenom i prezimenom korisnika te button “Login” gdje se klikom na njega otvara dialog za unos pina. Ukoliko je pin ok otvara se ekran za prikaz transakcija po racunu.
+Cilj zadatka nije samo funkcionalna aplikacija nego uvid u kod i cijelokupno rješenje.
+Bitne stvari o kojima se treba brinuti:
+- Održivost koda
+- Preglednost koda
+- Proširivanje aplikacije sa dodatnim featurima
+- UI/UX
+ 
+

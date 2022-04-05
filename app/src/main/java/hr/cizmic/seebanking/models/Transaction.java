@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Transaction {
+public class Transaction implements Comparable<Transaction>{
     private Integer id;
     private LocalDate date;
     private String amount;
@@ -38,5 +38,10 @@ public class Transaction {
 
     public LocalDate getDate() {
         return this.date;
+    }
+
+    @Override
+    public int compareTo(Transaction o) {
+        return  o.getDate().compareTo(this.getDate());
     }
 }

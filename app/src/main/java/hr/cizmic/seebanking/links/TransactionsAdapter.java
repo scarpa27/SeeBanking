@@ -1,4 +1,4 @@
-package hr.cizmic.seebanking.util;
+package hr.cizmic.seebanking.links;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,18 +9,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import hr.cizmic.seebanking.R;
-import hr.cizmic.seebanking.Repository;
 import hr.cizmic.seebanking.models.Transaction;
 
 public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapter.MyViewHolder> {
 
     private List<Transaction> transactions = new ArrayList<>();
-    private Repository repo = Repository.instance();
 
 
     public TransactionsAdapter() {Log.d("BANKA", "adapter is created "+transactions.size());}
@@ -28,7 +25,7 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
     @NonNull
     @Override
     public TransactionsAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View transactionsView = LayoutInflater.from(parent.getContext()).inflate(R.layout.transaction_list, parent, false);
+        View transactionsView = LayoutInflater.from(parent.getContext()).inflate(R.layout.transaction_item, parent, false);
         return new MyViewHolder(transactionsView);
     }
 

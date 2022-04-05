@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SeeBanking</string>
+    <string name="account_info">account_info</string>
+    <string name="seebank">SeeBank</string>
+    <string name="login_info">hr.cizmic.seebanking.login_info</string>
+    <string name="password">4 to 6 digits password</string>
 </resources>

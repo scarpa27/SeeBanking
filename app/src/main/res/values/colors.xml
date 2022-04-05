@@ -6,6 +6,11 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+    <color name="tetra_green">#78CC4C</color>
+    <color name="tetra_blue">#4ca3cc</color>
+    <color name="tetra_pink">#cc4c79</color>
+    <color name="tetra_brown">#cc774c</color>
+    <color name="white_alpha">#3bffffff</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

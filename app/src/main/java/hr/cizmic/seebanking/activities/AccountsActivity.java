@@ -1,47 +1,75 @@
 package hr.cizmic.seebanking.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.Window;
+import android.view.View;
 
-import java.time.LocalDate;
+import java.io.File;
 import java.util.ArrayList;
 
 import hr.cizmic.seebanking.R;
-import hr.cizmic.seebanking.Repository;
-import hr.cizmic.seebanking.models.Transaction;
-import hr.cizmic.seebanking.models.TransactionType;
-import hr.cizmic.seebanking.util.TransactionsAdapter;
+import hr.cizmic.seebanking.repositories.Repository;
+import hr.cizmic.seebanking.links.AccountAdapter;
+import hr.cizmic.seebanking.links.TransactionsAdapter;
 
 public class AccountsActivity extends AppCompatActivity {
     private RecyclerView rview;
-
-    private float x1, x2, w;
+    private RecyclerView cview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_accounts);
+        fun();
 
         rview = findViewById(R.id.recycler_view);
+        cview = findViewById(R.id.cards);
 
-        getScreenWidth();
         TransactionsAdapter t_adapter = new TransactionsAdapter();
-        setAdapter(t_adapter);
+        setTransactionsAdapter(t_adapter);
 
-        Log.d("BANKA","accounts activity start");
+        AccountAdapter a_adapter = new AccountAdapter();
+        setAccountsAdapter(a_adapter);
     }
 
-    private void setAdapter(TransactionsAdapter tadapt) {
+    //region AccountsAdapter
+    private void setAccountsAdapter(AccountAdapter aadapt) {
+        Repository.instance().getLiveUserInfo().observe(this, aadapt::updateData);
+        RecyclerView.LayoutManager manage = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+        cview.setLayoutManager(manage);
+        cview.setItemAnimator(new DefaultItemAnimator());
+        cview.setAdapter(aadapt);
+        SnapHelper snap = new LinearSnapHelper();
+        snap.attachToRecyclerView(cview);
+
+        final int[] pos = {0,0};
+        cview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    View centerView = snap.findSnapView(manage);
+                    assert centerView != null;
+                    pos[1] = manage.getPosition(centerView);
+                    for (int i = 0; i< pos[1] - pos[0]; i++) Repository.instance().SwipeRight();
+                    for (int i = 0; i< pos[0] - pos[1]; i++) Repository.instance().SwipeLeft();
+                    pos[0] = pos[1];
+                }
+            }
+        });
+    }
+    //endregion
+
+    //region TransactionsAdapter
+    private void setTransactionsAdapter(TransactionsAdapter tadapt) {
         Repository.instance().getLiveAccountInfo().observe(this, livedata -> {
             tadapt.updateData(livedata == null ? new ArrayList<>() : livedata.getTransactions());
         });
@@ -50,42 +78,22 @@ public class AccountsActivity extends AppCompatActivity {
         rview.setItemAnimator(new DefaultItemAnimator());
         rview.setAdapter(tadapt);
     }
+    //endregion
 
-    private void getScreenWidth() {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        w = displayMetrics.widthPixels;
-    }
 
-    public boolean onTouchEvent(MotionEvent touchEvent) {
-        switch (touchEvent.getAction()) {
-            case MotionEvent.ACTION_DOWN:{
-                x1 = touchEvent.getRawX();
-                break;
-            }
-            case MotionEvent.ACTION_UP: {
-                x2 = touchEvent.getRawX() - x1;
-                if (Math.abs(x2)/w > 0.25f) {
-                    if (x2<0)
-                        Repository.instance().SwipeLeft();
-                    else
-                        Repository.instance().SwipeRight();
-                }
-                break;
-            }
+    private void fun() {
+        Log.d("BANKA","TONIIIIIIIIIIIII");
+        String filename = "";
+        File directory;
+
+            directory = getFilesDir();
+
+            Log.d("BANKA", directory.getAbsolutePath().toString());
+
+        File[] files = directory.listFiles();
+        for (File file : files) {
+            Log.d("BANKA", file.getAbsolutePath().toString());
         }
-        return false;
     }
-
-
-
-
-
-
-
-
-
-
-
 
 }
