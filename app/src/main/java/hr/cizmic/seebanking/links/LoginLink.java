@@ -2,27 +2,38 @@ package hr.cizmic.seebanking.links;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import hr.cizmic.seebanking.models.Login;
 import hr.cizmic.seebanking.repositories.Repository;
 
 public class LoginLink extends ViewModel {
-    private MutableLiveData<Login>   _login = new MutableLiveData<>();
+    private static final String TAG = "BANKA";
+
+    private MutableLiveData<Login> mutLogin;
+
+    public LoginLink() {
+        mutLogin = new MutableLiveData<>();
+        Repository.instance().getLiveLoginInfo().observeForever(login -> mutLogin.setValue(login));
+    }
+
+    public static boolean isValidPass(String pass) {
+        return pass.length() >= 4 && pass.length() <= 6;
+    }
 
     public LiveData<Login> get_login_info() {
-        Repository.instance().getLiveLoginInfo().observeForever(new Observer<Login>() {
-            @Override
-            public void onChanged(Login login) {
-                _login.postValue(login);
-            }
-        });
-        return _login;
+        return mutLogin;
     }
 
+    public LiveData<Boolean> isCorrectPass(String pass) {
+        MutableLiveData<Boolean> bool = new MutableLiveData<>();
+        bool.setValue(Repository.instance().checkPassword(pass));
 
-    private static boolean isValidEmail() {
-        return true;
+        return bool;
     }
+
+    public void removeUserInfo() {
+        Repository.instance().removeUserInfo();
+    }
+
 }

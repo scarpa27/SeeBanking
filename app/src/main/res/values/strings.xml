@@ -4,4 +4,8 @@
     <string name="seebank">SeeBank</string>
     <string name="login_info">hr.cizmic.seebanking.login_info</string>
     <string name="password">4 to 6 digits password</string>
+    <string name="login_surname">Doe</string>
+    <string name="login_name">John</string>
+    <string name="register">Register</string>
+    <string name="logout">logout</string>
 </resources>

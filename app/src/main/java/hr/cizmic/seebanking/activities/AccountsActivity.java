@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,7 +29,6 @@ public class AccountsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accounts);
-        fun();
 
         rview = findViewById(R.id.recycler_view);
         cview = findViewById(R.id.cards);
@@ -65,6 +65,9 @@ public class AccountsActivity extends AppCompatActivity {
                 }
             }
         });
+        findViewById(R.id.bt_logout).setOnClickListener(view -> {
+            startActivity(new Intent(this, LaunchActivity.class));
+        });
     }
     //endregion
 
@@ -80,20 +83,5 @@ public class AccountsActivity extends AppCompatActivity {
     }
     //endregion
 
-
-    private void fun() {
-        Log.d("BANKA","TONIIIIIIIIIIIII");
-        String filename = "";
-        File directory;
-
-            directory = getFilesDir();
-
-            Log.d("BANKA", directory.getAbsolutePath().toString());
-
-        File[] files = directory.listFiles();
-        for (File file : files) {
-            Log.d("BANKA", file.getAbsolutePath().toString());
-        }
-    }
 
 }

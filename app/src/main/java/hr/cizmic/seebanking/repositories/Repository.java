@@ -2,16 +2,19 @@ package hr.cizmic.seebanking.repositories;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import hr.cizmic.seebanking.R;
+import hr.cizmic.seebanking.activities.LaunchActivity;
 import hr.cizmic.seebanking.activities.SeeBankingApp;
 import hr.cizmic.seebanking.models.Account;
 import hr.cizmic.seebanking.models.Login;
@@ -20,9 +23,12 @@ import hr.cizmic.seebanking.util.JSONParse;
 import hr.cizmic.seebanking.util.Util;
 
 public class Repository {
-    private MutableLiveData<Login> mutLogin = new MutableLiveData<>();
+    private static final String TAG = "BANKA";
+    
+    private MutableLiveData<Login> mutLogin;
     private MutableLiveData<User> mutLiveUser;
     private MutableLiveData<Account> mutLiveAcc;
+    private MutableLiveData<Boolean> passMatch;
     private User holdUser;
     private Account holdAcc;
     private int currAcc = 0;
@@ -34,25 +40,38 @@ public class Repository {
     }
     //endregion
 
+    private Repository() { setup(); }
+
     public LiveData<Login> getLiveLoginInfo() {
-        provjera();
         fetchLoginInfo();
         return mutLogin;
     }
 
+    //simulacija provjere u backendu
+    public boolean checkPassword(String pass) {
+        return pass.equals(Objects.requireNonNull(mutLogin.getValue()).get_password());
+    }
+
     public LiveData<User> getLiveUserInfo() {
-        provjera();
         fetchData();
         return mutLiveUser;
     }
 
     public LiveData<Account> getLiveAccountInfo() {
-        provjera();
         fetchData();
         return mutLiveAcc;
     }
 
-    private void provjera() {
+    public void postNewUserInfo(String... s) {
+        String info = s[0]+";"+s[1]+";"+s[2];
+        Application app = SeeBankingApp.instance();
+        SharedPreferences pref = app.getSharedPreferences(app.getString(R.string.login_info), Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = pref.edit();
+        edit.putString(app.getString(R.string.login_info),info);
+        edit.apply();
+    }
+
+    private void setup() {
         if (mutLiveUser == null)
             mutLiveUser = new MutableLiveData<>();
         if (mutLiveUser.getValue() == null)
@@ -64,14 +83,25 @@ public class Repository {
         if (mutLogin == null)
             mutLogin = new MutableLiveData<>();
         if (mutLogin.getValue() == null)
-            mutLogin.postValue(new Login("","",""));
+            mutLogin.postValue(new Login("2","",""));
+        if (passMatch == null)
+            passMatch = new MutableLiveData<>();
+        if (passMatch.getValue() == null)
+            passMatch.postValue(false);
     }
 
     private void fetchLoginInfo() {
         Application app = SeeBankingApp.instance();
         SharedPreferences pref = app.getSharedPreferences(app.getString(R.string.login_info), Context.MODE_PRIVATE);
         String[] info = pref.getString(app.getString(R.string.login_info),"").split(";");
+
         mutLogin.setValue(new Login(info[0],info[1],info[2]));
+    }
+
+    public void removeUserInfo() {
+        Application app = SeeBankingApp.instance();
+        SharedPreferences pref = app.getSharedPreferences(app.getString(R.string.login_info), Context.MODE_PRIVATE);
+        pref.edit().remove(app.getString(R.string.login_info)).apply();
     }
 
     private void fetchData() {
@@ -81,12 +111,11 @@ public class Repository {
         threadpool.execute(fetchJsonRunnable);
         threadpool.shutdown();
 
-
-        Log.d("BANKA", "thread lifecycle done");
+        Log.d(TAG, "thread lifecycle done");
     }
 
     private void queryUrl() {
-        Log.d("BANKA", "runnable started");
+        Log.d(TAG, "runnable started");
 
         holdUser = JSONParse.parseJSONtoTransactionList();
 
@@ -96,17 +125,17 @@ public class Repository {
         postHoldToMutable();
     }
 
-    private int getCurrAcc() {
-        int noAcc = holdUser.getAccounts().size();
-        return currAcc =
-                currAcc < 0 ? noAcc - 1
-                : currAcc >= noAcc ? 0 : currAcc;
-    }
-
     private void postHoldToMutable() {
         holdAcc = holdUser.getAccounts().get(getCurrAcc());
         mutLiveUser.postValue(holdUser);
         mutLiveAcc.postValue(holdAcc);
+    }
+
+    private int getCurrAcc() {
+        int noAcc = holdUser.getAccounts().size();
+        return currAcc =
+                currAcc < 0 ? noAcc - 1
+                        : currAcc >= noAcc ? 0 : currAcc;
     }
 
     public void SwipeRight() {

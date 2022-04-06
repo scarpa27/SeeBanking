@@ -49,12 +49,6 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
         notifyDataSetChanged();
     }
 
-    public String dataState() {
-        return transactions == null ? " null" : " inited";
-    }
-
-
-
     protected class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvAmount;
         private final TextView tvType;

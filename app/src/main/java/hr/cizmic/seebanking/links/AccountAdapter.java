@@ -16,7 +16,6 @@ import hr.cizmic.seebanking.models.User;
 
 public class AccountAdapter  extends RecyclerView.Adapter<AccountAdapter.MyViewHolder> {
     private ArrayList<Account> list = new ArrayList<Account>() {{new Account();}};
-    private Account acc;
 
     @NonNull
     @Override

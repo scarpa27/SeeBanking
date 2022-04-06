@@ -13,6 +13,7 @@ public class LaunchActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d("BANKA","launch");
         super.onCreate(savedInstanceState);
         startActivity(new Intent(this,
                 hasLocalUserInfo() ? LoginActivity.class : RegisterActivity.class));
